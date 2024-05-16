@@ -25,7 +25,7 @@ export class OrganizationController {
     return this.organizationService.getOrganization(id);
   }
 
-  // Tenho q escrever um teste para ver se o email e unico
+
   @Post()
   createOrganization(@Body() body: CreateOrganizationDto) {
     return this.organizationService.createOrganization(body);
