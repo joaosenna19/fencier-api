@@ -15,7 +15,7 @@ datasource db {
 
 model Organization {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  tenantId    String    @unique @default(cuid())
+  tenantId    String    @unique @default(uuid())
   name        String
   address     Address[]
   adminName   String
