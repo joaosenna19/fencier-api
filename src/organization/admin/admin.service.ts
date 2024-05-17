@@ -29,44 +29,40 @@ export class AdminService {
     });
   }
 
+  async getAdminByEmail(tenantId: string, email: string) {
+    return await this.prisma.admin.findUnique({
+      where: {
+        tenantId,
+        email,
+      },
+    });
+  }
+
   async createAdmin(tenantId: string, admin: CreateAdminDto) {
-    try {
-      return await this.prisma.admin.create({
-        data: {
-          ...admin,
-          tenantId,
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException('Something went wrong');
-    }
+    return await this.prisma.admin.create({
+      data: {
+        ...admin,
+        tenantId,
+      },
+    });
   }
 
   async deleteAdmin(tenantId: string, adminId: string) {
-    try {
-      return await this.prisma.admin.delete({
-        where: {
-          tenantId,
-          id: adminId,
-        },
-      });
-    } catch (error) {
-      throw new InternalServerErrorException('Something went wrong');
-    }
+    return await this.prisma.admin.delete({
+      where: {
+        tenantId,
+        id: adminId,
+      },
+    });
   }
 
   async updateAdmin(tenantId: string, adminId: string, admin: UpdateAdminDto) {
-    try {
-      return await this.prisma.admin.update({
-        where: {
-          tenantId,
-          id: adminId,
-        },
-        data: admin,
-      });
-    } catch (error) {
-      throw new InternalServerErrorException('Something went wrong');
-    }
+    return await this.prisma.admin.update({
+      where: {
+        tenantId,
+        id: adminId,
+      },
+      data: admin,
+    });
   }
 }

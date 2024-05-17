@@ -3,6 +3,7 @@ import {
   BadRequestException,
   Injectable,
   ArgumentMetadata,
+  NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { isMongoId } from 'class-validator';
@@ -25,7 +26,7 @@ export class ValidateAdminIdPipe implements PipeTransform {
       });
 
       if (!admin) {
-        throw new BadRequestException('Admin not found');
+        throw new NotFoundException('Admin not found');
       }
 
       return adminId;

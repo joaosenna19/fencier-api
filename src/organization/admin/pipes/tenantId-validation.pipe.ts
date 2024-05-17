@@ -3,6 +3,7 @@ import {
   Injectable,
   ArgumentMetadata,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { isUUID } from 'class-validator';
@@ -25,7 +26,7 @@ export class ValidateTenantIdPipe implements PipeTransform {
       });
 
       if (!tenant) {
-        throw new BadRequestException('Tenant not found');
+        throw new NotFoundException('Tenant not found');
       }
 
       return tenantId;
