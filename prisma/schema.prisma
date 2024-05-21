@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id          String    @id @default(cuid()) @map("_id") @db.ObjectId
+  tenantId    String    @unique @default(cuid())
+  name        String
+  address     Address[]
+  adminName   String
+  phoneNumber String
+  email       String    @unique
+  websiteUrl  String
+  logoUrl     String
+  createdAt   DateTime  @default(now())
+}
+
+model Admin {
+  id          String   @id @default(cuid()) @map("_id") @db.ObjectId
+  tenantId    String
+  firstName   String
+  lastName    String
+  phoneNumber String
+  email       String   @unique
+  password    String
+  createdAt   DateTime @default(now())
+}
+
+model Customer {
+  id          String    @id @default(cuid()) @map("_id") @db.ObjectId
+  tenantId    String
+  firstName   String
+  lastName    String
+  address     Address[]
+  phoneNumber String
+  email       String
+  createdAt   DateTime  @default(now())
+  Quote       Quote[]
+}
+
+model Material {
+  id          String   @id @default(cuid()) @map("_id") @db.ObjectId
+  tenantId    String
+  name        String
+  description String
+  styles      Style[]
+  type        Type
+  createdAt   DateTime @default(now())
+}
+
+model Quote {
+  id         String      @id @default(cuid()) @map("_id") @db.ObjectId
+  tenantId   String
+  customerId String      @db.ObjectId
+  materialId String      @db.ObjectId
+  styleId    String      @db.ObjectId
+  colorId    String      @db.ObjectId
+  feet       Float
+  nOfGates   Int
+  price      Float
+  status     QuoteStatus
+  createdAt  DateTime    @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id])
+}
+
+model Style {
+  id           String  @id @default(cuid()) @map("_id") @db.ObjectId
+  materialId   String  @db.ObjectId
+  name         String
+  pricePerFoot Float
+  colors       Color[]
+
+  material Material @relation(fields: [materialId], references: [id])
+}
+
+model Color {
+  id           String @id @default(cuid()) @map("_id") @db.ObjectId
+  styleId      String @db.ObjectId
+  name         String
+  pricePerFoot Float
+
+  style Style @relation(fields: [styleId], references: [id])
+}
+
+enum Type {
+  FENCE
+  GATE
+}
+
+type Address {
+  street     String
+  city       String
+  province   String
+  postalCode String
+}
+
+enum QuoteStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+}
