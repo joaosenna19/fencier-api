@@ -1,43 +1,29 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { CreateAdminDto } from '../dtos/create-admin.dto';
-import { AdminService } from '../admin.service';
-import * as bcrypt from 'bcrypt';
-
+import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-  constructor(private admin: AdminService) {}
+  constructor(
+    private configService: ConfigService,
+    private jwtService: JwtService,
+  ) {}
 
-  async signUp(tenantId: string, body: CreateAdminDto) {
-    const { email, password } = body;
-    
-    const adminExists = await this.admin.getAdminByEmail(tenantId, email);
+  async login(user: any, response: Response) {
+    const payload = { userId: user.id, email: user.email};
 
-    if (adminExists) {
-      throw new BadRequestException('Email already in use');
-    }
+    const expires = new Date();
+    expires.setSeconds(
+      expires.getSeconds() + this.configService.get<number>('JWT_EXPIRATION'),
+    );   
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const token = this.jwtService.sign(payload);
 
-    const admin = await this.admin.createAdmin(tenantId, { ...body, password: hashedPassword });
-
-    return admin;
-
-  }
-
-  async signIn(tenantId: string, email: string, password: string) { 
-    const admin = await this.admin.getAdminByEmail(tenantId, email);
-    if (!admin) {
-      throw new BadRequestException('Invalid email or password');
-    }
-
-    const passwordMatch = await bcrypt.compare(password, admin.password);
-
-    if (!passwordMatch) {
-      throw new BadRequestException('Invalid email or password');
-    }
-
-    return { admin, message: 'Login successful' };
+    response.cookie('Authentication', token, {
+      expires,
+      httpOnly: true,
+    });
   }
 
 }

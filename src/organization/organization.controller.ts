@@ -6,10 +6,12 @@ import {
   Param,
   Delete,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateOrganizationDto } from './dtos/create-organization.dto';
 import { UpdateOrganizationDto } from './dtos/update-organization.dto';
 import { OrganizationService } from './organization.service';
+
 
 @Controller('organization')
 export class OrganizationController {
