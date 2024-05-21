@@ -14,8 +14,8 @@ datasource db {
 }
 
 model Organization {
-  id          String    @id @default(cuid()) @map("_id") @db.ObjectId
-  tenantId    String    @unique @default(cuid())
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  tenantId    String    @unique @default(uuid())
   name        String
   address     Address[]
   adminName   String
@@ -24,10 +24,11 @@ model Organization {
   websiteUrl  String
   logoUrl     String
   createdAt   DateTime  @default(now())
+  active      Boolean   @default(true)
 }
 
 model Admin {
-  id          String   @id @default(cuid()) @map("_id") @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   tenantId    String
   firstName   String
   lastName    String
@@ -38,7 +39,7 @@ model Admin {
 }
 
 model Customer {
-  id          String    @id @default(cuid()) @map("_id") @db.ObjectId
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   tenantId    String
   firstName   String
   lastName    String
@@ -50,7 +51,7 @@ model Customer {
 }
 
 model Material {
-  id          String   @id @default(cuid()) @map("_id") @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   tenantId    String
   name        String
   description String
@@ -60,7 +61,7 @@ model Material {
 }
 
 model Quote {
-  id         String      @id @default(cuid()) @map("_id") @db.ObjectId
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
   tenantId   String
   customerId String      @db.ObjectId
   materialId String      @db.ObjectId
@@ -76,7 +77,7 @@ model Quote {
 }
 
 model Style {
-  id           String  @id @default(cuid()) @map("_id") @db.ObjectId
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
   materialId   String  @db.ObjectId
   name         String
   pricePerFoot Float
@@ -86,7 +87,7 @@ model Style {
 }
 
 model Color {
-  id           String @id @default(cuid()) @map("_id") @db.ObjectId
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
   styleId      String @db.ObjectId
   name         String
   pricePerFoot Float
@@ -104,6 +105,7 @@ type Address {
   city       String
   province   String
   postalCode String
+  country    String
 }
 
 enum QuoteStatus {
