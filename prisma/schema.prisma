@@ -80,7 +80,6 @@ model Style {
   id           String  @id @default(auto()) @map("_id") @db.ObjectId
   materialId   String  @db.ObjectId
   name         String
-  pricePerFoot Float
   colors       Color[]
 
   material Material @relation(fields: [materialId], references: [id])
