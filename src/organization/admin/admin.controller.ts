@@ -12,8 +12,8 @@ import {
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dtos/create-admin.dto';
 import { UpdateAdminDto } from './dtos/update-admin.dto';
-import { ValidateTenantIdPipe } from './pipes/tenantId-validation.pipe';
-import { ValidateAdminIdPipe } from './pipes/adminId-validation.pipe';
+import { ValidateTenantIdPipe } from '../pipes/tenantId-validation.pipe';
+import { ValidateMongoIdPipe } from '../pipes/mongoId-validation.pipe';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
@@ -28,7 +28,7 @@ export class AdminController {
   }
 
   @Get(':id')
-  async getAdmin(@Param('id', ValidateAdminIdPipe) id: string) {
+  async getAdmin(@Param('id', ValidateMongoIdPipe) id: string) {
     const admin = await this.adminService.getAdmin(id);
     return admin;
   }
@@ -50,7 +50,7 @@ export class AdminController {
   }
 
   @Delete()
-  async deleteAdmin(@Query('id', ValidateAdminIdPipe) id: string) {
+  async deleteAdmin(@Query('id', ValidateMongoIdPipe) id: string) {
     const admin = await this.adminService.deleteAdmin(id);
     return { message: 'Admin deleted successfully', admin: admin };
   }
@@ -58,7 +58,7 @@ export class AdminController {
   @UseGuards(JwtAuthGuard)
   @Patch()
   async updateAdmin(
-    @Query('id', ValidateAdminIdPipe) id: string,
+    @Query('id', ValidateMongoIdPipe) id: string,
     @Body() body: UpdateAdminDto,
   ) {
     const admin = await this.adminService.updateAdmin(id, body);

@@ -9,27 +9,27 @@ import { PrismaService } from 'src/database/prisma.service';
 import { isMongoId } from 'class-validator';
 
 @Injectable()
-export class ValidateAdminIdPipe implements PipeTransform {
+export class ValidateMongoIdPipe implements PipeTransform {
   constructor(private prisma: PrismaService) {}
 
   async transform(value: any, metadata: ArgumentMetadata) {
-    const adminId = value;
+    const id = value;
     if (!value) {
-      throw new BadRequestException('Admin ID is required');
-    } else if (!isMongoId(adminId)) {
-      throw new BadRequestException('Invalid Admin ID');
+      throw new BadRequestException('ID is required');
+    } else if (!isMongoId(id)) {
+      throw new BadRequestException('Invalid ID');
     } else {
       const admin = await this.prisma.admin.findUnique({
         where: {
-          id: adminId,
+          id: id,
         },
       });
 
       if (!admin) {
-        throw new NotFoundException('Admin not found');
+        throw new NotFoundException('Resource not found');
       }
 
-      return adminId;
+      return id;
     }
   }
 }
