@@ -1,34 +1,57 @@
-import { Controller, Get, Post, Delete, Patch, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Patch,
+  Param,
+  Query,
+  Body,
+} from '@nestjs/common';
 import { MaterialService } from './material.service';
-import { ValidateMongoIdPipe } from '../pipes/mongoId-validation.pipe';
+import { ValidateMongoIdMaterialPipe } from '../pipes/mongoId-validation-material.pipe';
 import { CreateMaterialDto } from './dtos/create-material.dto';
+import { ValidateTenantIdPipe } from '../pipes/tenantId-validation.pipe';
+import { PrismaService } from 'src/database/prisma.service';
+import { UpdateMaterialDto } from './dtos/update-material.dto';
 
-@Controller('material')
+@Controller('/material')
 export class MaterialController {
-  constructor(private materialService: MaterialService) {}
+  constructor(private materialService: MaterialService,
+    private prisma: PrismaService,
+  ) {}
+
+ 
 
   @Get()
-  getMaterials() {
-    return this.materialService.getMaterials();
+  async getMaterials() {
+    return await this.materialService.getMaterials();
   }
+
 
   @Get(':id')
-  getMaterial(@Param('id', ValidateMongoIdPipe) id: string ) {
-    return this.materialService.getMaterial(id);
+  async getMaterial(@Param('id', ValidateMongoIdMaterialPipe) id: string) {
+
+    return await this.materialService.getMaterial(id);
   }
+  
 
   @Post()
-  createMaterial(@Query('tenantId') tenantId: string, material: CreateMaterialDto) {
-    return 'Create a material';
+  async createMaterial(
+    @Query('tenantId', ValidateTenantIdPipe) tenantId: string, @Body()
+    material: CreateMaterialDto,
+  ) {
+    
+    return await this.materialService.createMaterial(material, tenantId);
   }
 
-  @Delete(':id')
-  deleteMaterial() {
-    return 'Delete a material';
+  @Delete()
+  async deleteMaterial(@Query('id', ValidateMongoIdMaterialPipe) id: string){
+    return await this.materialService.deleteMaterial(id);
   }
 
-  @Patch(':id')
-  updateMaterial() {
-    return 'Update a material';
+  @Patch()
+  async updateMaterial(@Body() material: UpdateMaterialDto, @Query('id', ValidateMongoIdMaterialPipe) id: string){
+    return await this.materialService.updateMaterial(id, material);
   }
 }
