@@ -22,6 +22,4 @@ export class UpdateAdminDto {
   @IsEmail()
   email: string;
 
-  @IsString()
-  password: string;
 }
