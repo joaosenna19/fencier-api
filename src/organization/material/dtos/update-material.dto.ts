@@ -7,27 +7,19 @@ enum MaterialType {
   GATE = 'GATE',
 }
 
-export class CreateMaterialDto {
+export class UpdateMaterialDto {
     @IsString()
-    @IsNotEmpty()
     name: string;
   
     @IsNumber()
-    @IsNotEmpty()
     quantity: number;
 
     @IsString()
     @IsOptional()
     description: string;
   
-    @IsEnum(MaterialType)
-    @IsString()
-    @IsOptional()
-    type: string;
-  
     @ValidateNested({ each: true })
     @Type(() => CreateStyleDto)
     @IsArray()
     styles: CreateStyleDto[];
   }
-

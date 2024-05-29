@@ -82,7 +82,7 @@ model Style {
   name         String
   colors       Color[]
 
-  material Material @relation(fields: [materialId], references: [id])
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
 }
 
 model Color {
@@ -91,7 +91,7 @@ model Color {
   name         String
   pricePerFoot Float
 
-  style Style @relation(fields: [styleId], references: [id])
+  style Style @relation(fields: [styleId], references: [id], onDelete: Cascade)
 }
 
 enum Type {
