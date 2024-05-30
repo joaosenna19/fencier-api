@@ -26,4 +26,8 @@ export class AuthService {
     });
   }
 
+  async logout(response: Response) {
+    response.clearCookie('Authentication');
+  }
+
 }
