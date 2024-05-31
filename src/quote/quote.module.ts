@@ -5,6 +5,6 @@ import { PrismaService } from 'src/database/prisma.service';
 
 @Module({
   controllers: [QuoteController],
-  providers: [QuoteService, PrismaService]
+  providers: [QuoteService, PrismaService],
 })
 export class QuoteModule {}

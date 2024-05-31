@@ -8,4 +8,8 @@ export class CreateColorDto {
   @IsNumber()
   @IsNotEmpty()
   pricePerFoot: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  gatePrice: number;
 }

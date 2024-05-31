@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { CreateMaterialDto } from './dtos/create-material.dto';
-import { Type } from '@prisma/client';
 import { UpdateMaterialDto } from './dtos/update-material.dto';
 
 @Injectable()
@@ -9,17 +8,15 @@ export class MaterialService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getMaterials() {
-    return await this.prisma.material.findMany(
-      {
-        include: {
-          styles: {
-            include: {
-              colors: true,
-            },
+    return await this.prisma.material.findMany({
+      include: {
+        styles: {
+          include: {
+            colors: true,
           },
         },
-      }
-    );
+      },
+    });
   }
 
   async getMaterial(id: string) {
@@ -50,7 +47,6 @@ export class MaterialService {
           tenantId: tenantId,
           name: createMaterialDto.name,
           description: createMaterialDto.description,
-          type: createMaterialDto.type as Type,
           styles: {
             create: createMaterialDto.styles.map((style) => ({
               name: style.name,
@@ -58,6 +54,7 @@ export class MaterialService {
                 create: style.colors.map((color) => ({
                   name: color.name,
                   pricePerFoot: color.pricePerFoot,
+                  gatePrice: color.gatePrice,
                 })),
               },
             })),
@@ -94,7 +91,6 @@ export class MaterialService {
         id,
       },
     });
-    
   }
 
   async updateMaterial(id: string, updateMaterialDto: UpdateMaterialDto) {
@@ -123,6 +119,7 @@ export class MaterialService {
               create: style.colors.map((color) => ({
                 name: color.name,
                 pricePerFoot: color.pricePerFoot,
+                gatePrice: color.gatePrice,
               })),
             },
           })),

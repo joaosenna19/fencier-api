@@ -1,8 +1,12 @@
 import { Body, Controller, Delete, Get, Patch, Post, Query } from '@nestjs/common';
 import { CreateQuoteDto } from './dtos/create-quote.dto'
+import { ValidateTenantIdPipe } from 'src/pipes/tenantId-validation.pipe';
+import { QuoteService } from './quote.service';
 
 @Controller('quote')
 export class QuoteController {
+
+    constructor(private quoteService: QuoteService) {}
 
     @Get()
     async getQuotes() {
@@ -15,8 +19,8 @@ export class QuoteController {
     }
 
     @Post()
-    async createQuote(@Body() createQuoteDto: CreateQuoteDto, tenantId: string){
-        return 'Create Quote';
+    async createQuote(@Body() createQuoteDto: CreateQuoteDto, @Query('tenantId', ValidateTenantIdPipe) tenantId: string){
+        return await this.quoteService.createQuote(createQuoteDto, tenantId);
     }
 
     @Delete()
