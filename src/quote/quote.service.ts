@@ -55,6 +55,25 @@ export class QuoteService {
       {
         where: {
           tenantId: tenantId
+        },
+        include: {
+          customerInfo: {
+            select: {
+              firstName: true,
+              lastName: true,
+              phoneNumber: true,
+              email: true,
+              address: {
+                select: {
+                  street: true,
+                  city: true,
+                  province: true,
+                  postalCode: true,
+                  country: true,
+                }
+              }
+            }
+          }
         }
       }
     );
