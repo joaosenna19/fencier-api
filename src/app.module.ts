@@ -5,7 +5,10 @@ import { OrganizationService } from './organization/organization.service';
 import { OrganizationModule } from './organization/organization.module';
 import { PrismaService } from './database/prisma.service';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './organization/admin/auth/auth.module';
+import { AuthModule } from './admin/auth/auth.module';
+import { QuoteService } from './quote/quote.service';
+import { QuoteController } from './quote/quote.controller';
+import { QuoteModule } from './quote/quote.module';
 
 @Module({
   imports: [
@@ -13,8 +16,9 @@ import { AuthModule } from './organization/admin/auth/auth.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    QuoteModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, OrganizationService, PrismaService, AuthModule],
+  controllers: [AppController, QuoteController],
+  providers: [AppService, OrganizationService, PrismaService, AuthModule, QuoteService],
 })
 export class AppModule {}

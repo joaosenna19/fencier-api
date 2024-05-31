@@ -38,16 +38,17 @@ model Admin {
   createdAt   DateTime @default(now())
 }
 
-model Customer {
+model CustomerInfo {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  tenantId    String
+  quoteId     String    @db.ObjectId
   firstName   String
   lastName    String
   address     Address[]
   phoneNumber String
   email       String
-  createdAt   DateTime  @default(now())
-  Quote       Quote[]
+
+  quote Quote @relation(fields: [quoteId], references: [id])
+
 }
 
 model Material {
@@ -56,31 +57,29 @@ model Material {
   name        String
   description String
   styles      Style[]
-  type        Type
   createdAt   DateTime @default(now())
 }
 
 model Quote {
-  id         String      @id @default(auto()) @map("_id") @db.ObjectId
-  tenantId   String
-  customerId String      @db.ObjectId
-  materialId String      @db.ObjectId
-  styleId    String      @db.ObjectId
-  colorId    String      @db.ObjectId
-  feet       Float
-  nOfGates   Int
-  price      Float
-  status     QuoteStatus
-  createdAt  DateTime    @default(now())
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  tenantId     String
+  materialId   String      @db.ObjectId
+  styleId      String      @db.ObjectId
+  colorId      String      @db.ObjectId
+  feet         Float
+  nOfGates     Int
+  price        Float
+  status       QuoteStatus
+  createdAt    DateTime    @default(now())
+  customerInfo CustomerInfo[]
 
-  customer Customer @relation(fields: [customerId], references: [id])
-}
+  }
 
 model Style {
-  id           String  @id @default(auto()) @map("_id") @db.ObjectId
-  materialId   String  @db.ObjectId
-  name         String
-  colors       Color[]
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  materialId String  @db.ObjectId
+  name       String
+  colors     Color[]
 
   material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
 }
@@ -90,13 +89,9 @@ model Color {
   styleId      String @db.ObjectId
   name         String
   pricePerFoot Float
+  gatePrice    Float
 
   style Style @relation(fields: [styleId], references: [id], onDelete: Cascade)
-}
-
-enum Type {
-  FENCE
-  GATE
 }
 
 type Address {
