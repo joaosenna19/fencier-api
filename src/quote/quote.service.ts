@@ -16,69 +16,65 @@ export class QuoteService {
       throw new Error('Color not found');
     }
 
-    const price = (data.feet * color.pricePerFoot) + (data.nOfGates * color.gatePrice);
+    // const price = (data.feet * color.pricePerFoot) + (data.nOfGates * color.gatePrice);
 
-    const quote = await this.prisma.quote.create({
-      data: {
+    // const quote = await this.prisma.quote.create({
+    //   data: {
+    //     tenantId: tenantId,
+    //     materialId: data.materialId,
+    //     styleId: data.styleId,
+    //     colorId: data.colorId,
+    //     feet: data.feet,
+    //     nOfGates: data.nOfGates,
+    //     price: price,
+    //     status: data.status,
+    //     customerInfo: {
+    //       create: {
+    //         firstName: data.customerInfo.firstName,
+    //         lastName: data.customerInfo.lastName,
+    //         address: {
+    //           street: data.customerInfo.address.street,
+    //           city: data.customerInfo.address.city,
+    //           province: data.customerInfo.address.province,
+    //           postalCode: data.customerInfo.address.postalCode,
+    //           country: data.customerInfo.address.country,
+    //         },
+    //         phoneNumber: data.customerInfo.phoneNumber,
+    //         email: data.customerInfo.email,
+    //       },
+    //     },
+    //   },
+    // });
+
+    // return quote;
+  }
+
+  async getQuotesByTenant(tenantId: string) {
+    return await this.prisma.quote.findMany({
+      where: {
         tenantId: tenantId,
-        materialId: data.materialId,
-        styleId: data.styleId,
-        colorId: data.colorId,
-        feet: data.feet,
-        nOfGates: data.nOfGates,
-        price: price,
-        status: data.status,
+      },
+      include: {
         customerInfo: {
-          create: {
-            firstName: data.customerInfo.firstName,
-            lastName: data.customerInfo.lastName,
+          select: {
+            firstName: true,
+            lastName: true,
+            phoneNumber: true,
+            email: true,
             address: {
-              street: data.customerInfo.address.street,
-              city: data.customerInfo.address.city,
-              province: data.customerInfo.address.province,
-              postalCode: data.customerInfo.address.postalCode,
-              country: data.customerInfo.address.country,
+              select: {
+                street: true,
+                city: true,
+                province: true,
+                postalCode: true,
+                country: true,
+              },
             },
-            phoneNumber: data.customerInfo.phoneNumber,
-            email: data.customerInfo.email,
           },
         },
       },
     });
-
-    return quote;
   }
-
-
-  async getQuotesByTenant(tenantId: string) {
-    return await this.prisma.quote.findMany(
-      {
-        where: {
-          tenantId: tenantId
-        },
-        include: {
-          customerInfo: {
-            select: {
-              firstName: true,
-              lastName: true,
-              phoneNumber: true,
-              email: true,
-              address: {
-                select: {
-                  street: true,
-                  city: true,
-                  province: true,
-                  postalCode: true,
-                  country: true,
-                }
-              }
-            }
-          }
-        }
-      }
-    );
-  }
-  
 
   async getQuoteById(id: string) {
     return await this.prisma.quote.findUnique({
@@ -97,11 +93,8 @@ export class QuoteService {
       where: { id: id },
       data: {
         status: data.status,
-        price: data.price,
+        finalPrice: data.price,
       },
     });
   }
-
-
-
 }

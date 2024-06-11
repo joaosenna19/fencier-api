@@ -1,15 +1,16 @@
-import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, ValidateNested, IsArray } from 'class-validator';
+import { CreateHeightDto } from './create-height.dto';
+import { Type } from 'class-transformer';
 
 export class CreateColorDto {
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @IsNumber()
-  @IsNotEmpty()
-  pricePerFoot: number;
+  @ValidateNested()
+  @ValidateNested({ each: true })
+  @Type(() => CreateHeightDto)
+  @IsArray()
+  heights: CreateHeightDto[];
 
-  @IsNumber()
-  @IsNotEmpty()
-  gatePrice: number;
 }

@@ -1,8 +1,6 @@
 import {
   IsString,
   IsNotEmpty,
-  IsNumber,
-  IsOptional,
   ValidateNested,
   IsArray,
 } from 'class-validator';
@@ -13,10 +11,6 @@ export class CreateMaterialDto {
   @IsString()
   @IsNotEmpty()
   name: string;
-
-  @IsString()
-  @IsOptional()
-  description: string;
 
   @ValidateNested({ each: true })
   @Type(() => CreateStyleDto)

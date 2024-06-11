@@ -55,7 +55,6 @@ model Material {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   tenantId    String
   name        String
-  description String
   styles      Style[]
   createdAt   DateTime @default(now())
 }
@@ -66,9 +65,11 @@ model Quote {
   materialId   String      @db.ObjectId
   styleId      String      @db.ObjectId
   colorId      String      @db.ObjectId
+  heightId     String      @db.ObjectId
   feet         Float
-  nOfGates     Int
-  price        Float
+  singleGate  Boolean?
+  doubleGate  Boolean?
+  finalPrice        Float
   status       QuoteStatus
   createdAt    DateTime    @default(now())
   customerInfo CustomerInfo[]
@@ -88,10 +89,24 @@ model Color {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   styleId      String @db.ObjectId
   name         String
-  pricePerFoot Float
-  gatePrice    Float
+  heights      Height[]
 
   style Style @relation(fields: [styleId], references: [id], onDelete: Cascade)
+  
+}
+
+model Height {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  feet        Float
+  pricePer8Ft Float
+  pricePer4Ft Float
+  priceSingleGate Float
+  priceDoubleGate Float
+  gateFeet  Float @default(4)
+  colorId     String @db.ObjectId
+
+  color Color @relation(fields: [colorId], references: [id], onDelete: Cascade)
+
 }
 
 type Address {
