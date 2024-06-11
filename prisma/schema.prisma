@@ -68,7 +68,6 @@ model Quote {
   heightId     String      @db.ObjectId
   feet         Float
   singleGate  Boolean?
-  doubleGate  Boolean?
   finalPrice        Float
   status       QuoteStatus
   createdAt    DateTime    @default(now())
