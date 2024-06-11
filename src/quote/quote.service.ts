@@ -16,30 +16,7 @@ export class QuoteService {
       throw new Error('Color not found');
     }
 
-    let actualFeet = data.singleGate
-      ? data.feet - height.gateFeet
-      : data.feet - height.gateFeet * 2;
-    const actualFeetIn8FootSections = actualFeet / 8;
-
-    const numberOf8Feet = Math.floor(actualFeetIn8FootSections);
-
-    const remainingFeet = actualFeet - numberOf8Feet * 8;
-
-    const numberOf4Feet = Math.ceil(remainingFeet / 4);
-
-    let price = 0;
-
-    if (!data.singleGate) {
-      price =
-        numberOf8Feet * height.pricePer8Ft +
-        numberOf4Feet * height.pricePer4Ft +
-        height.priceDoubleGate;
-    } else {
-        price =
-        numberOf8Feet * height.pricePer8Ft +
-        numberOf4Feet * height.pricePer4Ft +
-        height.priceSingleGate;
-    }
+    const price = calculatePrice(data, height);
 
     const quote = await this.prisma.quote.create({
       data: {
@@ -121,4 +98,34 @@ export class QuoteService {
       },
     });
   }
+}
+
+function calculatePrice(data, height) {
+  let actualFeet = data.singleGate
+    ? data.feet - height.gateFeet
+    : data.feet - height.gateFeet * 2;
+
+  const actualFeetIn8FootSections = actualFeet / 8;
+
+  const numberOf8Feet = Math.floor(actualFeetIn8FootSections);
+
+  const remainingFeet = actualFeet - numberOf8Feet * 8;
+
+  const numberOf4Feet = Math.ceil(remainingFeet / 4);
+
+  let price = 0;
+
+  if (!data.singleGate) {
+    price =
+      numberOf8Feet * height.pricePer8Ft +
+      numberOf4Feet * height.pricePer4Ft +
+      height.priceDoubleGate;
+  } else {
+    price =
+      numberOf8Feet * height.pricePer8Ft +
+      numberOf4Feet * height.pricePer4Ft +
+      height.priceSingleGate;
+  }
+
+  return price;
 }
