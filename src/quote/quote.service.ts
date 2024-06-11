@@ -94,7 +94,7 @@ export class QuoteService {
       where: { id: id },
       data: {
         status: data.status,
-        finalPrice: data.price,
+        finalPrice: data.finalPrice,
       },
     });
   }

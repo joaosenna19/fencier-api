@@ -47,7 +47,7 @@ model CustomerInfo {
   phoneNumber String
   email       String
 
-  quote Quote @relation(fields: [quoteId], references: [id])
+  quote Quote @relation(fields: [quoteId], references: [id], onDelete: Cascade)
 
 }
 

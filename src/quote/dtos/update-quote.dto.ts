@@ -1,4 +1,4 @@
-import { IsNumber, IsString, IsEnum, IsOptional } from 'class-validator';
+import { IsNumber, IsEnum, IsOptional } from 'class-validator';
 
 enum QuoteStatus {
   PENDING = 'PENDING',
@@ -13,5 +13,5 @@ export class UpdateQuoteDto {
 
   @IsOptional()
   @IsNumber()
-  price: number;
+  finalPrice: number;
 }
