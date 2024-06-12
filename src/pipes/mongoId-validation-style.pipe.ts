@@ -9,7 +9,7 @@ import {
   import { isMongoId } from 'class-validator';
   
   @Injectable()
-  export class ValidateMongoIdMaterialPipe implements PipeTransform {
+  export class ValidateMongoIdStylePipe implements PipeTransform {
     constructor(private prisma: PrismaService) {}
   
     async transform(value: any, metadata: ArgumentMetadata) {
@@ -17,10 +17,9 @@ import {
       if (!value) {
         throw new BadRequestException('ID is required');
       } else if (!isMongoId(id)) {
-        console.log('Invalid ID');
         throw new BadRequestException('Invalid ID');
       } else {
-        const material = await this.prisma.material.findUnique({
+        const material = await this.prisma.style.findUnique({
           where: {
             id: id,
           },
