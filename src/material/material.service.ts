@@ -12,7 +12,11 @@ export class MaterialService {
       include: {
         styles: {
           include: {
-            colors: true,
+            colors: {
+              include: {
+                heights: true,
+              },
+            },
           },
         },
       },
@@ -27,7 +31,11 @@ export class MaterialService {
       include: {
         styles: {
           include: {
-            colors: true,
+            colors: {
+              include: {
+                heights: true,
+              },
+            },
           },
         },
       },
@@ -46,15 +54,21 @@ export class MaterialService {
         data: {
           tenantId: tenantId,
           name: createMaterialDto.name,
-          description: createMaterialDto.description,
           styles: {
             create: createMaterialDto.styles.map((style) => ({
               name: style.name,
               colors: {
                 create: style.colors.map((color) => ({
                   name: color.name,
-                  pricePerFoot: color.pricePerFoot,
-                  gatePrice: color.gatePrice,
+                  heights: {
+                    create: color.heights.map((height) => ({
+                      feet: height.feet as number,
+                      pricePer8Ft: height.pricePer8Ft as number,
+                      pricePer4Ft: height.pricePer4Ft as number,
+                      priceSingleGate: height.priceSingleGate as number,
+                      priceDoubleGate: height.priceDoubleGate as number,
+                    })),
+                  },
                 })),
               },
             })),
@@ -63,15 +77,19 @@ export class MaterialService {
         include: {
           styles: {
             include: {
-              colors: true,
+              colors: {
+                include: {
+                  heights: true,
+                },
+              },
             },
           },
         },
       });
-
       return createdMaterial;
     } catch (e) {
-      return e;
+      console.log(e);
+      return await e;
     }
   }
 
@@ -110,16 +128,21 @@ export class MaterialService {
       },
       data: {
         name: updateMaterialDto.name,
-        description: updateMaterialDto.description,
         styles: {
-          deleteMany: {},
           create: updateMaterialDto.styles.map((style) => ({
             name: style.name,
             colors: {
               create: style.colors.map((color) => ({
                 name: color.name,
-                pricePerFoot: color.pricePerFoot,
-                gatePrice: color.gatePrice,
+                height: {
+                  create: color.heights.map((height) => ({
+                    feet: height.feet,
+                    pricePer8Ft: height.pricePer8Ft,
+                    pricePer4Ft: height.pricePer4Ft,
+                    priceSingleGate: height.priceSingleGate,
+                    priceDoubleGate: height.priceDoubleGate,
+                  })),
+                },
               })),
             },
           })),

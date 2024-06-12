@@ -8,15 +8,15 @@ export class QuoteService {
   constructor(private prisma: PrismaService) {}
 
   async createQuote(data: CreateQuoteDto, tenantId: string) {
-    const color = await this.prisma.color.findUnique({
-      where: { id: data.colorId },
+    const height = await this.prisma.height.findUnique({
+      where: { id: data.heightId },
     });
 
-    if (!color) {
+    if (!height) {
       throw new Error('Color not found');
     }
 
-    const price = (data.feet * color.pricePerFoot) + (data.nOfGates * color.gatePrice);
+    const price = calculatePrice(data, height);
 
     const quote = await this.prisma.quote.create({
       data: {
@@ -24,9 +24,10 @@ export class QuoteService {
         materialId: data.materialId,
         styleId: data.styleId,
         colorId: data.colorId,
+        heightId: data.heightId,
         feet: data.feet,
-        nOfGates: data.nOfGates,
-        price: price,
+        singleGate: data.singleGate,
+        finalPrice: price,
         status: data.status,
         customerInfo: {
           create: {
@@ -49,36 +50,32 @@ export class QuoteService {
     return quote;
   }
 
-
   async getQuotesByTenant(tenantId: string) {
-    return await this.prisma.quote.findMany(
-      {
-        where: {
-          tenantId: tenantId
+    return await this.prisma.quote.findMany({
+      where: {
+        tenantId: tenantId,
+      },
+      include: {
+        customerInfo: {
+          select: {
+            firstName: true,
+            lastName: true,
+            phoneNumber: true,
+            email: true,
+            address: {
+              select: {
+                street: true,
+                city: true,
+                province: true,
+                postalCode: true,
+                country: true,
+              },
+            },
+          },
         },
-        include: {
-          customerInfo: {
-            select: {
-              firstName: true,
-              lastName: true,
-              phoneNumber: true,
-              email: true,
-              address: {
-                select: {
-                  street: true,
-                  city: true,
-                  province: true,
-                  postalCode: true,
-                  country: true,
-                }
-              }
-            }
-          }
-        }
-      }
-    );
+      },
+    });
   }
-  
 
   async getQuoteById(id: string) {
     return await this.prisma.quote.findUnique({
@@ -97,11 +94,38 @@ export class QuoteService {
       where: { id: id },
       data: {
         status: data.status,
-        price: data.price,
+        finalPrice: data.finalPrice,
       },
     });
   }
+}
 
+function calculatePrice(data, height) {
+  let actualFeet = data.singleGate
+    ? data.feet - height.gateFeet
+    : data.feet - height.gateFeet * 2;
 
+  const actualFeetIn8FootSections = actualFeet / 8;
 
+  const numberOf8Feet = Math.floor(actualFeetIn8FootSections);
+
+  const remainingFeet = actualFeet - numberOf8Feet * 8;
+
+  const numberOf4Feet = Math.ceil(remainingFeet / 4);
+
+  let price = 0;
+
+  if (!data.singleGate) {
+    price =
+      numberOf8Feet * height.pricePer8Ft +
+      numberOf4Feet * height.pricePer4Ft +
+      height.priceDoubleGate;
+  } else {
+    price =
+      numberOf8Feet * height.pricePer8Ft +
+      numberOf4Feet * height.pricePer4Ft +
+      height.priceSingleGate;
+  }
+
+  return price;
 }

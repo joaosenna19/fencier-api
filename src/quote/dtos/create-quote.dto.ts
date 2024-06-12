@@ -3,7 +3,7 @@ import {
   IsString,
   IsEnum,
   ValidateNested,
-  IsArray,
+  IsBoolean,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { AddressDto } from 'src/organization/dtos/create-organization.dto';
@@ -42,11 +42,14 @@ export class CreateQuoteDto {
   @IsString()
   colorId: string;
 
+  @IsString()
+  heightId: string;
+
   @IsNumber()
   feet: number;
 
-  @IsNumber()
-  nOfGates: number;
+  @IsBoolean()
+  singleGate: boolean;
 
   @IsEnum(QuoteStatus)
   status: QuoteStatus;

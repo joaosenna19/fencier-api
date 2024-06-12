@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   Query,
+  Param
 } from '@nestjs/common';
 import { CreateQuoteDto } from './dtos/create-quote.dto';
 import { ValidateTenantIdPipe } from 'src/pipes/tenantId-validation.pipe';
@@ -21,8 +22,8 @@ export class QuoteController {
     return await this.quoteService.getQuotesByTenant(tenantId);
   }
 
-  @Get()
-  async getQuoteById(@Query('id') id: string) {
+  @Get(':id')
+  async getQuoteById(@Param('id') id: string) {
     return await this.quoteService.getQuoteById(id);
   }
 
