@@ -9,6 +9,7 @@ import { AuthModule } from './admin/auth/auth.module';
 import { QuoteService } from './quote/quote.service';
 import { QuoteController } from './quote/quote.controller';
 import { QuoteModule } from './quote/quote.module';
+import { StyleModule } from './material/style/style.module';
 
 @Module({
   imports: [
@@ -19,6 +20,6 @@ import { QuoteModule } from './quote/quote.module';
     QuoteModule,
   ],
   controllers: [AppController, QuoteController],
-  providers: [AppService, OrganizationService, PrismaService, AuthModule, QuoteService],
+  providers: [AppService, OrganizationService, PrismaService, AuthModule, QuoteService, StyleModule],
 })
 export class AppModule {}

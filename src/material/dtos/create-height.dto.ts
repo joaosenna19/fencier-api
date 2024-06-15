@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateHeightDto {
 
@@ -21,4 +21,8 @@ export class CreateHeightDto {
     @IsNotEmpty()
     @IsNumber()
     priceDoubleGate: Number
+
+    @IsNotEmpty()
+    @IsNumber()
+    gateFeet: Number
 }
