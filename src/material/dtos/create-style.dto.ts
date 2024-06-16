@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, IsOptional, ValidateNested } from 'class-validator';
+import { IsString, IsNotEmpty, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateColorDto } from  './create-color.dto';
 
@@ -9,5 +9,6 @@ export class CreateStyleDto {
 
   @ValidateNested({ each: true })
   @Type(() => CreateColorDto)
+  @IsNotEmpty()
   colors: CreateColorDto[];
 }

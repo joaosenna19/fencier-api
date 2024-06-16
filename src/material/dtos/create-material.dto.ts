@@ -15,5 +15,6 @@ export class CreateMaterialDto {
   @ValidateNested({ each: true })
   @Type(() => CreateStyleDto)
   @IsArray()
+  @IsNotEmpty()
   styles: CreateStyleDto[];
 }
