@@ -7,10 +7,11 @@ export class CreateColorDto {
   @IsNotEmpty()
   name: string;
 
-  @ValidateNested()
+
   @ValidateNested({ each: true })
   @Type(() => CreateHeightDto)
   @IsArray()
+  @IsNotEmpty()
   heights: CreateHeightDto[];
 
 }
