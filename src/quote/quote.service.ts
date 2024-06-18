@@ -9,7 +9,7 @@ export class QuoteService {
 
   async createQuote(data: CreateQuoteDto, tenantId: string) {
     const height = await this.prisma.height.findUnique({
-      where: { id: data.heightId },
+      where: { id: data.heightId }
     });
 
     if (!height) {
@@ -50,15 +50,48 @@ export class QuoteService {
     const customerInfo = await this.prisma.customerInfo.findFirst({
       where: { quoteId: quote.id },
     });
-    return { ...quote, customerInfo: customerInfo };
+
+    const material = await this.prisma.material.findUnique({
+      where: { id: quote.materialId },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    const style = await this.prisma.style.findUnique({
+      where: { id: quote.styleId },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    const color = await this.prisma.color.findUnique({
+      where: { id: quote.colorId },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    const heightFeet = height.feet;
+
+    return {
+      ...quote,
+      customerInfo: customerInfo,
+      material: material,
+      style: style,
+      color: color,
+      height: heightFeet,
+    };
   }
 
   async getQuotesByTenant(tenantId: string) {
     const quote = await this.prisma.quote.findMany({
       where: {
         tenantId: tenantId,
-      }
-      
+      },
     });
 
     return quote;
@@ -70,15 +103,32 @@ export class QuoteService {
       where: { id: id },
     });
 
-    console.log(quote); 
+    console.log(quote);
 
     const customerInfo = await this.prisma.customerInfo.findFirst({
       where: { quoteId: quote.id },
     });
 
+    const material = await this.prisma.material.findUnique({
+      where: { id: quote.materialId },
+    });
+    const style = await this.prisma.style.findUnique({
+      where: { id: quote.styleId },
+    });
+    const color = await this.prisma.color.findUnique({
+      where: { id: quote.colorId },
+    });
+    const height = await this.prisma.height.findUnique({
+      where: { id: quote.heightId },
+    });
+
     return {
       ...quote,
       customerInfo: customerInfo,
+      material: material,
+      style: style,
+      color: color,
+      height: height,
     };
   }
 
