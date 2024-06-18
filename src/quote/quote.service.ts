@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { CreateQuoteDto } from './dtos/create-quote.dto';
 import { UpdateQuoteDto } from './dtos/update-quote.dto';
@@ -13,7 +13,7 @@ export class QuoteService {
     });
 
     if (!height) {
-      throw new Error('Color not found');
+      throw new NotFoundException('Color not found');
     }
 
     const price = calculatePrice(data, height);
@@ -47,40 +47,39 @@ export class QuoteService {
       },
     });
 
-    return quote;
+    const customerInfo = await this.prisma.customerInfo.findFirst({
+      where: { quoteId: quote.id },
+    });
+    return { ...quote, customerInfo: customerInfo };
   }
 
   async getQuotesByTenant(tenantId: string) {
-    return await this.prisma.quote.findMany({
+    const quote = await this.prisma.quote.findMany({
       where: {
         tenantId: tenantId,
-      },
-      include: {
-        customerInfo: {
-          select: {
-            firstName: true,
-            lastName: true,
-            phoneNumber: true,
-            email: true,
-            address: {
-              select: {
-                street: true,
-                city: true,
-                province: true,
-                postalCode: true,
-                country: true,
-              },
-            },
-          },
-        },
-      },
+      }
+      
     });
+
+    return quote;
   }
 
   async getQuoteById(id: string) {
-    return await this.prisma.quote.findUnique({
+    console.log(id);
+    const quote = await this.prisma.quote.findUnique({
       where: { id: id },
     });
+
+    console.log(quote); 
+
+    const customerInfo = await this.prisma.customerInfo.findFirst({
+      where: { quoteId: quote.id },
+    });
+
+    return {
+      ...quote,
+      customerInfo: customerInfo,
+    };
   }
 
   async deleteQuote(id: string) {
