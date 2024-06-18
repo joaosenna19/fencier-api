@@ -12,6 +12,7 @@ import { CreateQuoteDto } from './dtos/create-quote.dto';
 import { ValidateTenantIdPipe } from 'src/pipes/tenantId-validation.pipe';
 import { QuoteService } from './quote.service';
 import { UpdateQuoteDto } from './dtos/update-quote.dto';
+import { ValidateMongoIdQuotePipe } from 'src/pipes/mongoId-validation-quote.pipe';
 
 @Controller('quote')
 export class QuoteController {
@@ -25,7 +26,7 @@ export class QuoteController {
 
   // Protect it later
   @Get(':id')
-  async getQuoteById(@Param('id') id: string) {
+  async getQuoteById(@Param('id', ValidateMongoIdQuotePipe) id: string) {
     return await this.quoteService.getQuoteById(id);
   }
 
@@ -40,7 +41,7 @@ export class QuoteController {
 
   // Protect it later
   @Delete()
-  async deleteQuote(@Query('id') id: string) {
+  async deleteQuote(@Query('id', ValidateMongoIdQuotePipe) id: string) {
     return await this.quoteService.deleteQuote(id);
   }
 
@@ -48,7 +49,7 @@ export class QuoteController {
   @Patch()
   async updateQuote(
     @Body() updateQuoteDto: UpdateQuoteDto,
-    @Query('id') id: string,
+    @Query('id', ValidateMongoIdQuotePipe) id: string,
   ) {
     return await this.quoteService.updateQuote(id, updateQuoteDto);
   }
