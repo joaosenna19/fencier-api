@@ -13,10 +13,14 @@ import { ValidateMongoIdMaterialPipe } from '../pipes/mongoId-validation-materia
 import { CreateMaterialDto } from './dtos/create-material.dto';
 import { ValidateTenantIdPipe } from '../pipes/tenantId-validation.pipe';
 import { UpdateMaterialDto } from './dtos/update-material.dto';
+import { UploadService } from './upload/upload.service';
 
 @Controller('/material')
 export class MaterialController {
-  constructor(private materialService: MaterialService) {}
+  constructor(
+    private materialService: MaterialService,
+    private uploadService: UploadService,
+  ) {}
 
   @Get()
   async getMaterials() {
@@ -31,10 +35,14 @@ export class MaterialController {
   @Post()
   async createMaterial(
     @Query('tenantId', ValidateTenantIdPipe) tenantId: string,
-    @Body()
-    material: CreateMaterialDto,
+    @Body() material: CreateMaterialDto,
   ) {
-    return await this.materialService.createMaterial(material, tenantId);
+    try {
+      return await this.materialService.createMaterial(material, tenantId);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   @Delete()

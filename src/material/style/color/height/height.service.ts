@@ -29,6 +29,7 @@ export class HeightService {
     try {
       return await this.prisma.height.create({
         data: {
+          imageUrl: createHeightDto.heightImageUrl,
           feet: createHeightDto.feet as number,
           pricePer8Ft: createHeightDto.pricePer8Ft as number,
           pricePer4Ft: createHeightDto.pricePer4Ft as number,

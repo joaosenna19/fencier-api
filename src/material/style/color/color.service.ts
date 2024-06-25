@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { CreateColorDto } from 'src/material/dtos/create-color.dto';
 import { UpdateColorDto } from 'src/material/dtos/update-color.dto';
+import { UploadService } from 'src/material/upload/upload.service';
 
 @Injectable()
 export class ColorService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly uploadService: UploadService,
+  ) {}
 
   async getColors(styleId: string) {
     return await this.prisma.color.findMany({
@@ -37,8 +41,10 @@ export class ColorService {
         data: {
           name: createColorDto.name,
           styleId: styleId,
+          imageUrl: createColorDto.colorImageUrl || '',
           heights: {
             create: createColorDto.heights.map((height) => ({
+              imageUrl: height.heightImageUrl || '',
               feet: height.feet as number,
               pricePer8Ft: height.pricePer8Ft as number,
               pricePer4Ft: height.pricePer4Ft as number,
@@ -54,11 +60,15 @@ export class ColorService {
   }
 
   async deleteColor(id: string) {
-    return await this.prisma.color.delete({
+    const color = await this.prisma.color.delete({
       where: {
         id: id,
       },
     });
+    const fileName = color.imageUrl.split('/').pop();
+    if (fileName) await this.uploadService.delete(fileName);
+
+    return color;
   }
 
   async updateColor(updateColorDto: UpdateColorDto, id: string) {
