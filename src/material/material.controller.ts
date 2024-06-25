@@ -50,11 +50,11 @@ export class MaterialController {
     return await this.materialService.deleteMaterial(id);
   }
 
-  // @Patch()
-  // async updateMaterial(
-  //   @Body() material: UpdateMaterialDto,
-  //   @Query('id', ValidateMongoIdMaterialPipe) id: string,
-  // ) {
-  //   return await this.materialService.updateMaterial(id, material);
-  // }
+  @Patch()
+  async updateMaterial(
+    @Body() material: UpdateMaterialDto,
+    @Query('id', ValidateMongoIdMaterialPipe) id: string,
+  ) {
+    return await this.materialService.updateMaterial(id, material);
+  }
 }

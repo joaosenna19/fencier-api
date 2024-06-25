@@ -174,52 +174,51 @@ export class MaterialService {
     return imageUrls;
   }
 
-  // async updateMaterial(id: string, updateMaterialDto: UpdateMaterialDto) {
-  //   const material = await this.prisma.material.findUnique({
-  //     where: {
-  //       id,
-  //     },
-  //   });
+  async updateMaterial(id: string, updateMaterialDto: UpdateMaterialDto) {
+    const material = await this.prisma.material.findUnique({
+      where: {
+        id,
+      },
+    });
 
-  //   if (!material) {
-  //     throw new NotFoundException('Material not found');
-  //   }
+  
 
-  //   return await this.prisma.material.update({
-  //     where: {
-  //       id,
-  //     },
-  //     data: {
-  //       name: updateMaterialDto.name,
-  //       styles: {
-  //         create: updateMaterialDto.styles.map((style) => ({
-  //           name: style.name,
-  //           imageUrl: style.imageUrl,
-  //           colors: {
-  //             create: style.colors.map((color) => ({
-  //               name: color.name,
-  //               imageUrl: color.imageUrl,
-  //               height: {
-  //                 create: color.heights.map((height) => ({
-  //                   feet: height.feet,
-  //                   pricePer8Ft: height.pricePer8Ft,
-  //                   pricePer4Ft: height.pricePer4Ft,
-  //                   priceSingleGate: height.priceSingleGate,
-  //                   priceDoubleGate: height.priceDoubleGate,
-  //                 })),
-  //               },
-  //             })),
-  //           },
-  //         })),
-  //       },
-  //     },
-  //     include: {
-  //       styles: {
-  //         include: {
-  //           colors: true,
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
+    return await this.prisma.material.update({
+      where: {
+        id,
+      },
+      data: {
+        name: updateMaterialDto.name,
+        styles: {
+          create: updateMaterialDto.styles.map((style) => ({
+            name: style.name,
+            imageUrl: style.styleImageUrl,
+            colors: {
+              create: style.colors.map((color) => ({
+                name: color.name,
+                imageUrl: color.colorImageUrl,
+                height: {
+                  create: color.heights.map((height) => ({
+                    imageUrl: height.heightImageUrl,
+                    feet: height.feet,
+                    pricePer8Ft: height.pricePer8Ft,
+                    pricePer4Ft: height.pricePer4Ft,
+                    priceSingleGate: height.priceSingleGate,
+                    priceDoubleGate: height.priceDoubleGate,
+                  })),
+                },
+              })),
+            },
+          })),
+        },
+      },
+      include: {
+        styles: {
+          include: {
+            colors: true,
+          },
+        },
+      },
+    });
+  }
 }
