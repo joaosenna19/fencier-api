@@ -9,7 +9,7 @@ export class QuoteService {
 
   async createQuote(data: CreateQuoteDto, tenantId: string) {
     const height = await this.prisma.height.findUnique({
-      where: { id: data.heightId }
+      where: { id: data.heightId },
     });
 
     if (!height) {
@@ -88,13 +88,46 @@ export class QuoteService {
   }
 
   async getQuotesByTenant(tenantId: string) {
-    const quote = await this.prisma.quote.findMany({
+    const quotes = await this.prisma.quote.findMany({
       where: {
         tenantId: tenantId,
       },
     });
 
-    return quote;
+    const detailedQuotes = await Promise.all(
+      quotes.map(async (quote) => {
+        const customerInfo = await this.prisma.customerInfo.findFirst({
+          where: { quoteId: quote.id },
+        });
+
+        const material = await this.prisma.material.findUnique({
+          where: { id: quote.materialId },
+        });
+
+        const style = await this.prisma.style.findUnique({
+          where: { id: quote.styleId },
+        });
+
+        const color = await this.prisma.color.findUnique({
+          where: { id: quote.colorId },
+        });
+
+        const height = await this.prisma.height.findUnique({
+          where: { id: quote.heightId },
+        });
+
+        return {
+          ...quote,
+          customerInfo: customerInfo,
+          material: material,
+          style: style,
+          color: color,
+          height: height,
+        };
+      }),
+    );
+
+    return detailedQuotes;
   }
 
   async getQuoteById(id: string) {
