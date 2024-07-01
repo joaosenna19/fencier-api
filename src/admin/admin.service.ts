@@ -15,6 +15,9 @@ export class AdminService {
 
   async getAdmins(tenantId: string) {
     return await this.prisma.admin.findMany({
+      omit: {
+        password: true,
+      },
       where: {
         tenantId,
       },
