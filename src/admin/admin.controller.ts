@@ -27,12 +27,6 @@ export class AdminController {
     return user;
   }
 
-  @Get(':id')
-  async getAdmin(@Param('id', ValidateMongoIdPipe) id: string) {
-    const admin = await this.adminService.getAdmin(id);
-    return admin;
-  }
-
   @Post('/signup')
   async createAdmin(
     @Query('tenantId', ValidateTenantIdPipe) tenantId: string,
@@ -43,8 +37,8 @@ export class AdminController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':tenantId')
-  async getAdmins(@Param('tenantId', ValidateTenantIdPipe) tenantId: string) {
+  @Get('/tenant-admins')
+  async getAdmins(@Query('tenantId', ValidateTenantIdPipe) tenantId: string) {
     const admins = await this.adminService.getAdmins(tenantId);
     return admins;
   }
