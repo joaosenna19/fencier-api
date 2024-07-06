@@ -34,6 +34,9 @@ export class AdminService {
 
   async getAdminById(adminId: string) {
     return await this.prisma.admin.findUnique({
+      omit: {
+        password: true,
+      },
       where: {
         id: adminId,
       },
@@ -88,6 +91,9 @@ export class AdminService {
 
   async deleteAdmin(adminId: string) {
     return await this.prisma.admin.delete({
+      omit: {
+        password: true,
+      },
       where: {
         id: adminId,
       },
@@ -95,7 +101,20 @@ export class AdminService {
   }
 
   async updateAdmin(adminId: string, admin: UpdateAdminDto) {
+    const { email } = admin;
+    const emailInUse = await this.prisma.admin.findFirst({
+      where: {
+        email,
+      },
+    });
+    if (emailInUse) {
+      throw new BadRequestException('Email already in use');
+    }
+
     return await this.prisma.admin.update({
+      omit: {
+        password: true,
+      },
       where: {
         id: adminId,
       },
