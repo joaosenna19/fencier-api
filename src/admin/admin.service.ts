@@ -8,6 +8,7 @@ import { PrismaService } from 'src/database/prisma.service';
 import { CreateAdminDto } from './dtos/create-admin.dto';
 import { UpdateAdminDto } from './dtos/update-admin.dto';
 import * as bcrypt from 'bcrypt';
+import { UpdatePasswordDto } from './dtos/update-password.dto';
 
 @Injectable()
 export class AdminService {
@@ -119,6 +120,33 @@ export class AdminService {
         id: adminId,
       },
       data: admin,
+    });
+  }
+
+  async updatePassword(adminId: string, admin: UpdatePasswordDto) {
+    const { oldPassword, password } = admin;
+    const adminData = await this.prisma.admin.findUnique({
+      where: {
+        id: adminId,
+      },
+    });
+
+    const passwordMatch = await bcrypt.compare(oldPassword, adminData.password);
+    if (!passwordMatch) {
+      throw new BadRequestException('Invalid password');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    return await this.prisma.admin.update({
+      where: {
+        id: adminId,
+      },
+      data: {
+        password: hashedPassword,
+      },
+      omit: {
+        password: true,
+      },
     });
   }
 }

@@ -16,6 +16,7 @@ import { ValidateTenantIdPipe } from '../pipes/tenantId-validation.pipe';
 import { ValidateMongoIdPipe } from '../pipes/mongoId-validation.pipe';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { UpdatePasswordDto } from './dtos/update-password.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -59,5 +60,13 @@ export class AdminController {
     return { message: 'Admin updated successfully', admin: admin };
   }
 
-
+  @UseGuards(JwtAuthGuard)
+  @Patch('/update-password')
+  async changePassword(
+    @Query('id', ValidateMongoIdPipe) id: string,
+    @Body() body: UpdatePasswordDto,
+  ) {
+    const admin = await this.adminService.updatePassword(id, body);
+    return { message: 'Password changed successfully', admin: admin };
+  }
 }
