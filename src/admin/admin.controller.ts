@@ -51,11 +51,13 @@ export class AdminController {
 
   @UseGuards(JwtAuthGuard)
   @Patch()
-  async updateAdmin(
+  async updateAdminEmail(
     @Query('id', ValidateMongoIdPipe) id: string,
     @Body() body: UpdateAdminDto,
   ) {
     const admin = await this.adminService.updateAdmin(id, body);
     return { message: 'Admin updated successfully', admin: admin };
   }
+
+
 }
