@@ -44,7 +44,7 @@ export class ColorService {
           imageUrl: createColorDto.colorImageUrl || '',
           heights: {
             create: createColorDto.heights.map((height) => ({
-              imageUrl: height.heightImageUrl || '',
+              imageUrl: height.heightImageUrl || 'https://fencierriofence.s3.amazonaws.com/fenceheight.jpg',
               feet: height.feet as number,
               pricePer8Ft: height.pricePer8Ft as number,
               pricePer4Ft: height.pricePer4Ft as number,
