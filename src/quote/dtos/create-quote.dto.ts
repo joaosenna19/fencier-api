@@ -12,6 +12,8 @@ enum QuoteStatus {
   PENDING = 'PENDING',
   ACCEPTED = 'ACCEPTED',
   REJECTED = 'REJECTED',
+  ARCHIVED = 'ARCHIVED',
+  CONTACTED = 'CONTACTED',
 }
 
 class CustomerInfoDto {

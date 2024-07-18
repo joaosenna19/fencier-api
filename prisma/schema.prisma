@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["omitApi"]
 }
 
@@ -49,71 +49,64 @@ model CustomerInfo {
   email       String
 
   quote Quote @relation(fields: [quoteId], references: [id], onDelete: Cascade)
-
 }
 
 model Material {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  tenantId    String
-  name        String
-  styles      Style[]
-  createdAt   DateTime @default(now())
-  imageUrl    String
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  tenantId  String
+  name      String
+  styles    Style[]
+  createdAt DateTime @default(now())
+  imageUrl  String
 }
 
 model Quote {
-  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
   tenantId     String
-  materialId   String      @db.ObjectId
-  styleId      String      @db.ObjectId
-  colorId      String      @db.ObjectId
-  heightId     String      @db.ObjectId
+  materialId   String         @db.ObjectId
+  styleId      String         @db.ObjectId
+  colorId      String         @db.ObjectId
+  heightId     String         @db.ObjectId
   feet         Float
-  singleGate  Boolean?
-  finalPrice        Float
+  singleGate   Boolean?
+  finalPrice   Float
   status       QuoteStatus
-  createdAt    DateTime    @default(now())
+  createdAt    DateTime       @default(now())
   customerInfo CustomerInfo[]
-
-  }
+}
 
 model Style {
   id         String  @id @default(auto()) @map("_id") @db.ObjectId
   materialId String  @db.ObjectId
   name       String
-  imageUrl    String
+  imageUrl   String
   colors     Color[]
-  
 
   material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
 }
 
 model Color {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  styleId      String @db.ObjectId
-  name         String
-  imageUrl      String
-  heights      Height[]
- 
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  styleId  String   @db.ObjectId
+  name     String
+  imageUrl String
+  heights  Height[]
 
   style Style @relation(fields: [styleId], references: [id], onDelete: Cascade)
-  
 }
 
 model Height {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  feet        Float
-  pricePer8Ft Float
-  pricePer4Ft Float
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  feet            Float
+  pricePer8Ft     Float
+  pricePer4Ft     Float
   priceSingleGate Float
   priceDoubleGate Float
-  gateFeet  Float @default(4)
-  imageUrl    String
-  colorId     String @db.ObjectId
-  
+  gateFeet        Float  @default(4)
+  imageUrl        String
+  colorId         String @db.ObjectId
 
   color Color @relation(fields: [colorId], references: [id], onDelete: Cascade)
-
 }
 
 type Address {
@@ -128,5 +121,6 @@ enum QuoteStatus {
   PENDING
   ACCEPTED
   REJECTED
-  COMPLETED
+  ARCHIVED
+  CONTACTED
 }
