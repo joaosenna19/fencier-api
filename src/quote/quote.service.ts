@@ -201,31 +201,43 @@ export class QuoteService {
 }
 
 function calculatePrice(data, height) {
+  const gateFeet = height.gateFeet || 0;
+  const pricePer8Ft = height.pricePer8Ft || 0;
+  const pricePer4Ft = height.pricePer4Ft || 0;
+  const priceSingleGate = height.priceSingleGate || 0;
+  const priceDoubleGate = height.priceDoubleGate || 0;
+
   let actualFeet = data.singleGate
-    ? data.feet - height.gateFeet
-    : data.feet - height.gateFeet * 2;
+    ? data.feet - gateFeet
+    : data.feet - gateFeet * 2;
 
   const actualFeetIn8FootSections = actualFeet / 8;
-
   const numberOf8Feet = Math.floor(actualFeetIn8FootSections);
-
   const remainingFeet = actualFeet - numberOf8Feet * 8;
-
   const numberOf4Feet = Math.ceil(remainingFeet / 4);
 
   let price = 0;
-
   if (!data.singleGate) {
     price =
-      numberOf8Feet * height.pricePer8Ft +
-      numberOf4Feet * height.pricePer4Ft +
-      height.priceDoubleGate;
+      numberOf8Feet * pricePer8Ft +
+      numberOf4Feet * pricePer4Ft +
+      priceDoubleGate;
   } else {
     price =
-      numberOf8Feet * height.pricePer8Ft +
-      numberOf4Feet * height.pricePer4Ft +
-      height.priceSingleGate;
+      numberOf8Feet * pricePer8Ft +
+      numberOf4Feet * pricePer4Ft +
+      priceSingleGate;
   }
+
+  console.log('Price Calculation:', {
+    numberOf8Feet,
+    numberOf4Feet,
+    pricePer8Ft,
+    pricePer4Ft,
+    priceSingleGate,
+    priceDoubleGate,
+    totalPrice: price,
+  });
 
   return price;
 }
